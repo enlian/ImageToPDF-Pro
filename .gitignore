@@ -1,3 +1,11 @@
 .venv
 *.pdf
 processed*
+imgs*/
+test*
+*.png
+*.jpg
+*imgs/
+sphigh/
+*high/
+super/
