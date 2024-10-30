@@ -1,76 +1,76 @@
-## Image & PDF Toolkit
+## 画像＆PDFツールキット
 
-This project provides a set of scripts to process images and PDFs entirely on your local machine. All operations are done offline, ensuring your privacy. It’s designed to be quick and easy to use, especially for users who want efficient, local file processing.
+このプロジェクトは、完全にローカルで画像やPDFファイルを処理するためのスクリプトを提供します。すべての操作がオフラインで行われ、プライバシーを確保します。手軽にローカルでファイルを処理したいユーザーに最適です。
 
-### Installation
+### インストール
 
-1. **Install Python Dependencies**: Ensure you have Python installed. Open a terminal or command prompt, navigate to the project folder, and run the following command to install the necessary dependencies:
+1. **Python依存ライブラリのインストール**: Pythonがインストールされていることを確認してください。ターミナルやコマンドプロンプトを開き、プロジェクトフォルダに移動して、次のコマンドを実行して必要なライブラリをインストールします：
 
    ```bash
    pip install pillow pymupdf tqdm
    ```
 
-2. **Run a Script**: Depending on your needs, execute the relevant script. For example, to convert images to a PDF, use the command:
+2. **スクリプトの実行**: ニーズに応じて、該当するスクリプトを実行します。たとえば、画像をPDFに変換したい場合は、以下のコマンドを使用します：
 
    ```bash
    python ImgsToPdf.py
    ```
 
-3. **Check the Output**: After the script completes, the processed files will be saved in the specified output location, depending on the script. 
+3. **出力の確認**: スクリプトが完了すると、処理されたファイルはスクリプトに指定された出力場所に保存されます。
 
-### Script Functions
+### スクリプトの機能
 
-Each script performs a unique function:
+各スクリプトには特定の機能があります：
 
-- **ClearImgsByAi.py**: Enhances image clarity using AI-based processing.
-- **CropPdf.py**: Crops unwanted borders or sections from PDF files.
-- **ImgsToPdf.py**: Converts a series of images into a single PDF file.
-- **PdfToImgs.py**: Splits a PDF file into separate images, saving each page as an image.
-- **ResizeImg.py**: Resizes images, allowing you to change resolution or dimensions.
+- **ClearImgsByAi.py**: AI技術で画像を鮮明化し、品質を向上させます。
+- **CropPdf.py**: PDFファイルの不要な余白や部分をトリミングします。
+- **ImgsToPdf.py**: 一連の画像を1つのPDFファイルに変換します。
+- **PdfToImgs.py**: PDFファイルを個別の画像に分割し、各ページを画像として保存します。
+- **ResizeImg.py**: 画像のリサイズを行い、解像度やサイズを変更できます。
 
-### Customizing the Code (Example: Changing Input Folder)
+### コードのカスタマイズ方法（例：入力フォルダの変更）
 
-Each script contains a variable for the input folder where files are read from. Here’s how you can modify it:
+各スクリプトには、ファイルを読み込むための入力フォルダが指定されています。このフォルダを変更する方法は以下の通りです：
 
-1. **Open the Script**: Open the script you want to modify (for example, `ImgsToPdf.py`) in a text editor.
+1. **スクリプトを開く**: カスタマイズしたいスクリプト（例：`ImgsToPdf.py`）をテキストエディタで開きます。
 
-2. **Find the Input Folder Path**: Look for a line of code near the top that defines `input_folder`, such as:
+2. **入力フォルダのパスを見つける**: 上部付近にある `input_folder` の変数を見つけます。例えば、次のように記述されています：
 
    ```python
-   input_folder = 'highImgs'  # Original input folder path
+   input_folder = 'highImgs'  # 元の入力フォルダパス
    ```
 
-3. **Change the Folder Path**: Replace `'highImgs'` with the path to your new folder. For example, if you want to use a folder named `images`, change it to:
+3. **フォルダパスの変更**: `'highImgs'` を、新しいフォルダパスに置き換えます。例えば、`images` というフォルダを使用したい場合、次のように変更します：
 
    ```python
    input_folder = 'images'
    ```
 
-4. **Save the Changes**: Save the modified script file.
+4. **変更内容を保存**: スクリプトファイルを保存します。
 
-5. **Run the Script Again**: Run the script as usual, and it will now use the updated folder path.
+5. **再度スクリプトを実行**: 通常通りスクリプトを実行すると、更新されたフォルダパスが使用されます。
 
-### Example Customization
+### カスタマイズ例
 
-Let’s say you want to change both the input and output folders for `ImgsToPdf.py`. Here’s what you would update:
+例えば、`ImgsToPdf.py` スクリプトで入力フォルダと出力フォルダの両方を変更したい場合、以下のように修正します：
 
 ```python
-# Original code
+# 元のコード
 input_folder = 'highImgs'
 output_pdf = f"output_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
 
-# Modified code
-input_folder = 'my_images'  # New input folder path
-output_pdf = 'outputs/my_pdf_output.pdf'  # New output path and filename
+# 変更後のコード
+input_folder = 'my_images'  # 新しい入力フォルダ
+output_pdf = 'outputs/my_pdf_output.pdf'  # 新しい出力フォルダとファイル名
 ```
 
-After making this change, the script will now read images from the `my_images` folder and save the PDF to `outputs/my_pdf_output.pdf`.
+この変更により、`my_images` フォルダから画像を読み込み、PDFを `outputs/my_pdf_output.pdf` に保存するようになります。
 
-### Additional Notes
+### 補足
 
-- **Make Sure the Folder Exists**: If the input or output folder does not exist, you may need to create it manually, or you can add code to create it automatically if needed.
-- **Adjust Other Parameters**: You can also adjust parameters like DPI (image resolution) or quality settings in each script to control the output quality and file size.
+- **フォルダが存在することを確認**: 入力または出力フォルダが存在しない場合は、手動で作成するか、自動的に作成するコードを追加することができます。
+- **他のパラメータの調整**: 各スクリプト内でDPI（解像度）や品質設定などを調整することも可能です。これにより、出力品質やファイルサイズを管理できます。
 
-### Security and Privacy
+### セキュリティとプライバシー
 
-All processing is done locally, ensuring your files stay on your computer. This project is ideal for those who value privacy and want quick, local processing of image and PDF files.
+すべての処理はローカルで行われ、ファイルはコンピュータ上にとどまります。プライバシーを重視する方や、迅速なローカル処理を求めるユーザーに最適です。
