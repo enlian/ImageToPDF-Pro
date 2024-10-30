@@ -1,186 +1,76 @@
-# Enhance-Crop-PDF
+## Image & PDF Toolkit
 
-Enhance-Crop-PDF is a Python-based tool designed to enhance and crop high-resolution PDF documents by converting them to images, performing specific cropping operations, and then converting the cropped images back into a consolidated PDF. This tool is particularly useful when dealing with large PDFs and documents where you need to enhance or crop specific sections.
+This project provides a set of scripts to process images and PDFs entirely on your local machine. All operations are done offline, ensuring your privacy. It’s designed to be quick and easy to use, especially for users who want efficient, local file processing.
 
-## Features
+### Installation
 
-- Converts high-resolution PDFs to images (with adjustable DPI).
-- Allows precise cropping of specific areas based on pixel coordinates.
-- Uses multiprocessing to process large PDFs efficiently.
-- Automatically combines processed images back into a single PDF.
-
-## Requirements
-
-To use this project, you will need the following libraries and tools installed:
-
-### Python Libraries
-
-- **Python 3.6 or higher**
-- **Pillow**: Python Imaging Library (PIL) fork for image processing.
-- **pdf2image**: Converts PDF pages into images.
-- **opencv-python**: OpenCV for image manipulation.
-- **tqdm**: Progress bar utility for tracking the process.
-- **multiprocessing**: Python’s built-in library for parallel processing.
-
-You can install the necessary Python libraries by running:
-
-```bash
-pip install -r requirements.txt
-```
-
-### External Tools
-
-- **Poppler**: A PDF rendering library. It is required for `pdf2image` to convert PDF pages into images.
-  
-  **Windows**:
-  - Download and install Poppler for Windows from [here](https://blog.alivate.com.au/poppler-windows/).
-  - After installing, add the path to the `bin` folder (e.g., `C:\path-to-poppler\bin`) to your system's environment `PATH`.
-
-  **Linux**:
-  ```bash
-  sudo apt install poppler-utils
-  ```
-
-  **macOS**:
-  ```bash
-  brew install poppler
-  ```
-
-## Installation
-
-1. Clone the repository or download the project files:
+1. **Install Python Dependencies**: Ensure you have Python installed. Open a terminal or command prompt, navigate to the project folder, and run the following command to install the necessary dependencies:
 
    ```bash
-   git clone https://github.com/yourusername/Enhance-Crop-PDF.git
-   cd Enhance-Crop-PDF
+   pip install pillow pymupdf tqdm
    ```
 
-2. Install the required Python packages using `pip`:
+2. **Run a Script**: Depending on your needs, execute the relevant script. For example, to convert images to a PDF, use the command:
 
    ```bash
-   pip install -r requirements.txt
+   python ImgsToPdf.py
    ```
 
-3. Ensure that **Poppler** is installed and its path is properly configured in your system's `PATH` environment variable (see above).
+3. **Check the Output**: After the script completes, the processed files will be saved in the specified output location, depending on the script. 
 
-## Usage
+### Script Functions
 
-### Running the Tool
+Each script performs a unique function:
 
-Once installed, you can run the tool using:
+- **ClearImgsByAi.py**: Enhances image clarity using AI-based processing.
+- **CropPdf.py**: Crops unwanted borders or sections from PDF files.
+- **ImgsToPdf.py**: Converts a series of images into a single PDF file.
+- **PdfToImgs.py**: Splits a PDF file into separate images, saving each page as an image.
+- **ResizeImg.py**: Resizes images, allowing you to change resolution or dimensions.
 
-```bash
-python app.py
-```
+### Customizing the Code (Example: Changing Input Folder)
 
-By default, the tool will process the PDF named `1.pdf` in the current directory, converting it into high-resolution images, cropping the images, and merging them back into a PDF.
+Each script contains a variable for the input folder where files are read from. Here’s how you can modify it:
 
-### Input PDF
+1. **Open the Script**: Open the script you want to modify (for example, `ImgsToPdf.py`) in a text editor.
 
-Make sure your PDF file is placed in the same directory as the script or provide the full path in the script.
+2. **Find the Input Folder Path**: Look for a line of code near the top that defines `input_folder`, such as:
 
-### Output
+   ```python
+   input_folder = 'highImgs'  # Original input folder path
+   ```
 
-The processed images and the final combined PDF will be saved in a newly created directory named `processed_output_YYYYMMDD_HHMMSS`, where `YYYYMMDD_HHMMSS` is the current timestamp.
+3. **Change the Folder Path**: Replace `'highImgs'` with the path to your new folder. For example, if you want to use a folder named `images`, change it to:
 
-### Parameters
+   ```python
+   input_folder = 'images'
+   ```
 
-You can adjust the following parameters in the script to suit your needs:
+4. **Save the Changes**: Save the modified script file.
 
-1. **PDF File**:
-   - Change the `pdf_path` variable to point to your desired PDF file:
+5. **Run the Script Again**: Run the script as usual, and it will now use the updated folder path.
 
-     ```python
-     pdf_path = 'your_pdf_file.pdf'
-     ```
+### Example Customization
 
-2. **DPI (Resolution)**:
-   - The `dpi` setting controls the resolution of the output images. A higher DPI will result in clearer images but larger file sizes and more memory usage.
-     
-     Default:
-     ```python
-     dpi = 900
-     ```
-     
-     You can adjust it to other values such as `300`, `600`, or `1200` depending on your needs.
-
-3. **Cropping Parameters**:
-   - The cropping is controlled by the `crop_x_start`, `crop_y_start`, `crop_width`, and `crop_height` variables. These parameters define the starting point and the size of the cropping area in pixels.
-   
-     Default cropping coordinates:
-     ```python
-     crop_x_start = 1695  # Start from 1695 pixels from the left
-     crop_y_start = 900   # Start from 900 pixels from the top
-     crop_width = 2931    # Width of the cropping area in pixels
-     crop_height = 4453   # Height of the cropping area in pixels
-     ```
-
-     You can modify these values to define a different crop area, depending on the structure of your PDF.
-
-4. **Parallel Processing**:
-   - The tool uses parallel processing to handle large PDFs efficiently. You can modify the number of processes used by changing the `processes` parameter in the `Pool` constructor.
-   
-     Default:
-     ```python
-     with Pool(processes=4) as pool:  # Change 4 to your desired number of parallel processes
-     ```
-
-     Increase the number of processes if your system has enough memory and CPU cores, or decrease it if you're experiencing memory issues.
-
-5. **Timeout**:
-   - You can control the maximum time allowed for processing each page by adjusting the `timeout` parameter. The default is 600 seconds (10 minutes per page).
-   
-     Default:
-     ```python
-     timeout = 600  # 10 minutes timeout per page
-     ```
-
-6. **Page Range**:
-   - You can adjust the `start_page` and `end_page` to limit the range of pages you want to process.
-     
-     Example:
-     ```python
-     start_page = 1
-     end_page = 100  # Process only the first 100 pages
-     ```
-
-### Example
-
-To run the script with a different PDF file (`sample.pdf`) and a lower DPI of 600, adjust the script as follows:
+Let’s say you want to change both the input and output folders for `ImgsToPdf.py`. Here’s what you would update:
 
 ```python
-pdf_path = 'sample.pdf'
-dpi = 600
+# Original code
+input_folder = 'highImgs'
+output_pdf = f"output_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+
+# Modified code
+input_folder = 'my_images'  # New input folder path
+output_pdf = 'outputs/my_pdf_output.pdf'  # New output path and filename
 ```
 
-Then run:
+After making this change, the script will now read images from the `my_images` folder and save the PDF to `outputs/my_pdf_output.pdf`.
 
-```bash
-python app.py
-```
+### Additional Notes
 
-## Troubleshooting
+- **Make Sure the Folder Exists**: If the input or output folder does not exist, you may need to create it manually, or you can add code to create it automatically if needed.
+- **Adjust Other Parameters**: You can also adjust parameters like DPI (image resolution) or quality settings in each script to control the output quality and file size.
 
-### Poppler not found
+### Security and Privacy
 
-If you see errors related to **Poppler** not being found, make sure that:
-- Poppler is installed on your system.
-- The path to Poppler’s `bin` directory is added to your system’s environment `PATH`.
-
-### Memory Errors
-
-If you encounter memory errors during processing:
-- Reduce the number of parallel processes by adjusting `processes=4` to a lower number (e.g., `processes=2`).
-- Lower the DPI setting to reduce the memory usage of each image.
-
-### Timeout Errors
-
-If some pages take too long to process, you may increase the `timeout` parameter or skip problematic pages by adjusting the page range.
-
-## Contribution
-
-Feel free to fork the project, submit issues, or create pull requests for any features or bug fixes.
-
-## License
-
-This project is licensed under the MIT License.
+All processing is done locally, ensuring your files stay on your computer. This project is ideal for those who value privacy and want quick, local processing of image and PDF files.
