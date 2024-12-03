@@ -4,47 +4,73 @@ from tqdm import tqdm
 from datetime import datetime
 import gc
 import re
+from PyPDF2 import PdfMerger
 
-# 输入文件夹路径和输出 PDF 文件路径
-input_folder = 'super'  # 替换为你的图片文件夹路径
-output_pdf = f"output_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+# Input folder and output PDF path
+input_folder = 'output_20241203_182059'  # Replace with your image folder path
+final_output_pdf = f"final_output_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+temp_folder = "temp_pdfs"
 
-# 使用正则表达式从文件名中提取数字，并按数字顺序排序
+# Create temporary folder
+if not os.path.exists(temp_folder):
+    os.makedirs(temp_folder)
+
+# Sort files based on numbers in their filenames
 def sort_key(filename):
     match = re.search(r'page_(\d+)', filename)
     return int(match.group(1)) if match else float('inf')
 
-# 获取文件夹中的所有图片文件并排序
+# Get sorted list of image files
 image_files = sorted(
     [f for f in os.listdir(input_folder) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif', '.tiff'))],
     key=sort_key
 )
 
-# 定义一个生成器，逐页加载和保存图片，以降低内存使用
-def generate_images(skip_first=False):
-    for i, filename in enumerate(tqdm(image_files, desc="Converting Images to PDF")):
-        if skip_first and i == 0:
-            continue  # 跳过第一个文件
-        input_path = os.path.join(input_folder, filename)
-        try:
-            with Image.open(input_path) as img:
-                img = img.convert("RGB")  # 转换为 RGB 模式
-                img.info['dpi'] = (600, 600)  # 设置 DPI 为 600
-                yield img
-                gc.collect()  # 手动回收内存
-        except Exception as e:
-            print(f"Error processing {filename}: {e}")
-            continue
+# Chunk size for processing
+chunk_size = 50
+temp_pdfs = []
 
-# 将生成的图片逐页保存为 PDF
-first_image = next(generate_images(), None)
-if first_image:
-    # 使用第一个图片生成 PDF，跳过重复第一页
-    first_image.save(output_pdf, save_all=True, append_images=list(generate_images(skip_first=True)), quality=85, optimize=True)
-    print(f"PDF 已保存到: {output_pdf}")
-else:
-    print("没有可用的图片来生成 PDF 文件。")
+for i in range(0, len(image_files), chunk_size):
+    chunk_files = image_files[i:i + chunk_size]
+    output_pdf = os.path.join(temp_folder, f"temp_chunk_{i//chunk_size + 1}.pdf")
+    temp_pdfs.append(output_pdf)
 
-# 清理内存
-del first_image
-gc.collect()
+    try:
+        # Load images in one pass and add progress bar
+        images = []
+        for filename in tqdm(chunk_files, desc=f"Processing chunk {i//chunk_size + 1}/{len(image_files)//chunk_size + 1}"):
+            input_path = os.path.join(input_folder, filename)
+            try:
+                with Image.open(input_path) as img:
+                    img = img.convert("RGB")
+                    img.info['dpi'] = (600, 600)  # Set DPI
+                    images.append(img.copy())  # Copy image to avoid closing issues
+            except Exception as e:
+                print(f"Error processing {filename}: {e}")
+                continue
+
+        # Save chunk as a temporary PDF
+        if images:
+            images[0].save(output_pdf, save_all=True, append_images=images[1:], quality=85, optimize=True)
+            print(f"Saved chunk to: {output_pdf}")
+        else:
+            print(f"No images found for chunk: {output_pdf}")
+    except Exception as e:
+        print(f"Error saving chunk {i//chunk_size + 1}: {e}")
+    finally:
+        gc.collect()  # Manually release memory
+
+# Merge all temporary PDFs into the final PDF
+merger = PdfMerger()
+for pdf in temp_pdfs:
+    merger.append(pdf)
+
+merger.write(final_output_pdf)
+merger.close()
+
+# Clean up temporary files
+for temp_pdf in temp_pdfs:
+    os.remove(temp_pdf)
+os.rmdir(temp_folder)
+
+print(f"Final PDF file has been created: {final_output_pdf}")
