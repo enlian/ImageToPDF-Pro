@@ -7,12 +7,12 @@ from datetime import datetime
 from multiprocessing import Pool, cpu_count
 import gc
 
-# PDF 文件路径
-pdf_path = '1.pdf'
-
-# 设置 DPI 和目标宽度
+# 可修改参数
+pdf_path = '1.pdf'  # PDF 文件路径
+start_page = 1  # 要处理的起始页
+end_page = 279  # 要处理的结束页
 dpi = 300  # 转换时的 DPI
-target_width = 1200  # 限制宽度分辨率，防止变形
+target_width = 1200  # 目标宽度分辨率，防止变形
 
 # 定义每个进程处理的函数
 def process_page(page_data):
@@ -60,10 +60,6 @@ def main():
     output_dir = f'output_{datetime.now().strftime("%Y%m%d_%H%M%S")}'
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-
-    # 指定要处理的页面范围
-    start_page = 1
-    end_page = 264  # 根据 PDF 页数调整
 
     # 并行处理 PDF 转换
     process_pdf_in_parallel(pdf_path, dpi, start_page, end_page, output_dir)

@@ -7,7 +7,7 @@ import re
 from PyPDF2 import PdfMerger
 
 # Input folder and output PDF path
-input_folder = 'output_20241203_182059'  # Replace with your image folder path
+input_folder = 'output_20241203_231841'  # 读取目录（确保里面是高清图）
 final_output_pdf = f"final_output_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
 temp_folder = "temp_pdfs"
 

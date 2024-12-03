@@ -9,7 +9,7 @@ from PIL import Image
 Image.MAX_IMAGE_PIXELS = None
 
 # 设置路径
-input_dir = 'output_20241203_181629'
+input_dir = 'output_20241203_231054'
 output_dir = f'output_{datetime.now().strftime("%Y%m%d_%H%M%S")}'
 executable_path = './ai/realesrgan-ncnn-vulkan.exe'
 
